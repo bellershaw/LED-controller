@@ -29,14 +29,16 @@ lights_api.lights = Lights(**{
                  })
 
 @lights_api.get("/")
-def read_root():
+def get_info():
     return({
         "LED_COUNT" : LED_COUNT,
         "LED_PIN"   : LED_PIN,
         "LED_FREQ_HZ" : LED_FREQ_HZ,
         "LED_DMA" : LED_DMA,
-        "LED_BRIGHTNESS" : LED_BRIGHTNESS,
         "LED_CHANNEL" : LED_CHANNEL,    
+        "LED_BRIGHTNESS" : lights_api.lights.brightness,
+        "LED_EFFECT" : lights_api.lights.effect,
+        "LED_SPEED" : lights_api.lights.speed,
         "LED_COLOR" : {
                 "RED" : lights_api.lights.red,
                 "GREEN" : lights_api.lights.green,
@@ -56,6 +58,12 @@ def change_color(red, green, blue):
                 "BLUE" : lights_api.lights.blue
                 }
             })
+
+#change brightness
+@lights_api.put("/change_brightness")
+def change_brightness(brightness):
+    lights_api.lights.brightness = brightness
+    return({"BRIGHTNESS" : lights_api.lights.brightness})
 
 #change speed
 

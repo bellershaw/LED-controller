@@ -1,8 +1,10 @@
 from fastapi import FastAPI
 from pydantic import BaseModel
 from rpi_ws281x import *
+import neopixel
+import board
 
-LED_COUNT       = 45
+LED_COUNT       = 60
 LED_PIN         = 18
 LED_FREQ_HZ     = 800000
 LED_DMA         = 10
@@ -29,7 +31,11 @@ lights_api.lights = Lights(**{
             'speed': 10
                  })
 
-lights_api.strip = Adafruit_NeoPixel(LED_COUNT, LED_PIN, LED_FREQ_HZ, LED_DMA, False, lights_api.lights.brightness, LED_CHANNEL)
+strip = neopixel.NeoPixel(board.D18, 60, brightness = 1)
+
+strip.brightness = 0.1
+strip.fill((255,255,255))
+strip.show()
 
 @lights_api.get("/")
 async def get_info():
@@ -55,6 +61,7 @@ async def change_color(red, green, blue):
     lights_api.lights.red = red
     lights_api.lights.green = green
     lights_api.lights.blue = blue
+    strip.fill((int(red), int(green), int(blue)))
     return({"LED_COLOR" : {
                 "RED" : lights_api.lights.red,
                 "GREEN" : lights_api.lights.green,
@@ -64,10 +71,12 @@ async def change_color(red, green, blue):
 
 #change brightness
 @lights_api.put("/change_brightness")
-async def change_brightness(brightness):
+def change_brightness(brightness):
     lights_api.lights.brightness = brightness
-    return({"BRIGHTNESS" : lights_api.lights.brightness})
+    strip.brightness = float(brightness)/100
+    return({"BRIGHTNESS" : int(lights_api.lights.brightness)})
 
 #change speed
 
 #change effect
+    

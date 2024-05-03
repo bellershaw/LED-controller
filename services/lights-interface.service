@@ -1,0 +1,14 @@
+[Unit]
+Description=Website for interfacing with LED API
+After=network.target
+
+[Service]
+# Command to execute when the service is started
+User=braeden
+WorkingDirectory=/home/braeden/LED-controller/lights-interface
+ExecStart=/usr/local/bin/serve -s build
+Restart=on-failure
+RestartSec=5s
+
+[Install]
+WantedBy=multi-user.target

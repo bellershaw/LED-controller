@@ -1,0 +1,13 @@
+[Unit]
+Description=FastAPI API for controlling LED strip
+After=network.target
+
+[Service]
+# Command to execute when the service is started
+User=root
+ExecStart=/usr/local/bin/fastapi run --host 192.168.0.219 /home/braeden/LED-controller/lights-api/lights-api.py
+Restart=on-failure
+RestartSec=5s
+
+[Install]
+WantedBy=multi-user.target

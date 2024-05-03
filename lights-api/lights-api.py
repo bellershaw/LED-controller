@@ -1,5 +1,6 @@
 from fastapi import FastAPI
 from pydantic import BaseModel
+from rpi_ws281x import *
 
 LED_COUNT       = 45
 LED_PIN         = 18
@@ -28,8 +29,10 @@ lights_api.lights = Lights(**{
             'speed': 10
                  })
 
+lights_api.strip = Adafruit_NeoPixel(LED_COUNT, LED_PIN, LED_FREQ_HZ, LED_DMA, False, lights_api.lights.brightness, LED_CHANNEL)
+
 @lights_api.get("/")
-def get_info():
+async def get_info():
     return({
         "LED_COUNT" : LED_COUNT,
         "LED_PIN"   : LED_PIN,
@@ -48,7 +51,7 @@ def get_info():
 
 #change color
 @lights_api.put("/change_color")
-def change_color(red, green, blue):
+async def change_color(red, green, blue):
     lights_api.lights.red = red
     lights_api.lights.green = green
     lights_api.lights.blue = blue
@@ -61,7 +64,7 @@ def change_color(red, green, blue):
 
 #change brightness
 @lights_api.put("/change_brightness")
-def change_brightness(brightness):
+async def change_brightness(brightness):
     lights_api.lights.brightness = brightness
     return({"BRIGHTNESS" : lights_api.lights.brightness})
 

@@ -1,4 +1,5 @@
 from fastapi import FastAPI
+from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
 from rpi_ws281x import *
 import neopixel
@@ -13,6 +14,16 @@ LED_CHANNEL     = 0
 
 lights_api = FastAPI()
 lights_api.type = "00"
+
+origins = ["*"]
+
+lights_api.add_middleware(
+    CORSMiddleware,
+    allow_origins=origins,
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
 class Lights(BaseModel):
     red: int

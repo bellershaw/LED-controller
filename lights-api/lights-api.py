@@ -19,7 +19,7 @@ class Lights(BaseModel):
     effect: str
     speed: int
 
-lights = Lights(**{
+lights_api.lights = Lights(**{
             'red': 256,
             'green': 256,
             'blue': 256,
@@ -30,7 +30,6 @@ lights = Lights(**{
 
 @lights_api.get("/")
 def read_root():
-    print(lights)
     return({
         "LED_COUNT" : LED_COUNT,
         "LED_PIN"   : LED_PIN,
@@ -39,22 +38,22 @@ def read_root():
         "LED_BRIGHTNESS" : LED_BRIGHTNESS,
         "LED_CHANNEL" : LED_CHANNEL,    
         "LED_COLOR" : {
-                "RED" : lights.red,
-                "GREEN" : lights.green,
-                "BLUE" : lights.blue
+                "RED" : lights_api.lights.red,
+                "GREEN" : lights_api.lights.green,
+                "BLUE" : lights_api.lights.blue
                 }
             })
 
 #change color
 @lights_api.put("/change_color")
 def change_color(red, green, blue):
-    lights.red = red
-    lights.green = green
-    lights.blue = blue
+    lights_api.lights.red = red
+    lights_api.lights.green = green
+    lights_api.lights.blue = blue
     return({"LED_COLOR" : {
-                "RED" : lights.red,
-                "GREEN" : lights.green,
-                "BLUE" : lights.blue
+                "RED" : lights_api.lights.red,
+                "GREEN" : lights_api.lights.green,
+                "BLUE" : lights_api.lights.blue
                 }
             })
 

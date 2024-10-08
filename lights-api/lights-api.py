@@ -4,6 +4,7 @@ from pydantic import BaseModel
 from rpi_ws281x import *
 import neopixel
 import board
+import time
 
 LED_COUNT       = 60
 LED_PIN         = 18
@@ -68,7 +69,7 @@ async def get_info():
 
 #change color
 @lights_api.put("/change_color")
-async def change_color(red, green, blue):
+def change_color(red, green, blue):
     lights_api.lights.red = red
     lights_api.lights.green = green
     lights_api.lights.blue = blue
@@ -87,6 +88,35 @@ def change_brightness(brightness):
     strip.brightness = float(brightness)/100
     return({"BRIGHTNESS" : int(lights_api.lights.brightness)})
 
+@lights_api.put("/fade_in")
+def fade_in(max_brightness):
+    max_brightness = float(max_brightness)
+    for i in range(0, int(max_brightness + 1), int(max_brightness/40)): 
+        lights_api.lights.brightness = i
+        strip.brightness = float(i)/100
+        time.sleep(.05)
+    return({"BRIGHTNESS" : int(lights_api.lights.brightness)})
+
+@lights_api.put("/fade_out")
+def fade_out():
+    brightness = lights_api.lights.brightness
+    for i in range(0, int(brightness + 1), int(brightness/40)): 
+        lights_api.lights.brightness = brightness-i
+        strip.brightness = float(brightness-i)/100
+        time.sleep(.05)
+    return({"BRIGHTNESS" : int(lights_api.lights.brightness)})
+
+
+@lights_api.put("/alarm_mode")
+def alarm_mode(alarm_mode):
+    temp_color = [lights_api.lights.red, lights_api.lights.green, lights_api.lights.blue]
+    if alarm_mode:
+        for i in range(0,1):
+            change_color(255,255,255)
+            fade_in(100)
+            fade_out()
+        change_color(int(temp_color[0]), int(temp_color[1]), int(temp_color[2]))
+        fade_in(100)
 #change speed
 
 #change effect

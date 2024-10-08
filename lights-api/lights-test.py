@@ -78,8 +78,15 @@ def theaterChaseRainbow(strip, wait_ms=50):
             for i in range(0, strip.numPixels(), 3):
                 strip.setPixelColor(i+q, 0)
 
+def fade_in(max_brightness):
+    max_brightness = float(max_brightness)
+    for i in range(0, int(max_brightness + 1), int(max_brightness/10)): 
+        #lights_api.lights.brightness = i
+        print(i)
+        strip.brightness = float(i)/100
+        time.sleep(.1)
+
 # Main program logic follows:
-if __name__ == '__main__':
     # Process arguments
     parser = argparse.ArgumentParser()
     parser.add_argument('-c', '--clear', action='store_true', help='clear the display on exit')
@@ -97,19 +104,19 @@ if __name__ == '__main__':
     try:
 
         while True:
-            print ('Color wipe animations.')
-            colorWipe(strip, Color(255, 0, 0))  # Red wipe
-            colorWipe(strip, Color(0, 255, 0))  # Blue wipe
-            colorWipe(strip, Color(0, 0, 255))  # Green wipe
-            print ('Theater chase animations.')
-            theaterChase(strip, Color(127, 127, 127))  # White theater chase
-            theaterChase(strip, Color(127,   0,   0))  # Red theater chase
-            theaterChase(strip, Color(  0,   0, 127))  # Blue theater chase
-            print ('Rainbow animations.')
-            rainbow(strip)
-            rainbowCycle(strip)
-            theaterChaseRainbow(strip)
-
+            #print ('Color wipe animations.')
+            #colorWipe(strip, Color(255, 0, 0))  # Red wipe
+            #colorWipe(strip, Color(0, 255, 0))  # Blue wipe
+            #colorWipe(strip, Color(0, 0, 255))  # Green wipe
+            #print ('Theater chase animations.')
+            #theaterChase(strip, Color(127, 127, 127))  # White theater chase
+            #theaterChase(strip, Color(127,   0,   0))  # Red theater chase
+            #theaterChase(strip, Color(  0,   0, 127))  # Blue theater chase
+            #print ('Rainbow animations.')
+            #rainbow(strip)
+            #rainbowCycle(strip)
+            #theaterChaseRainbow(strip)
+            fade_in(100)
     except KeyboardInterrupt:
         if args.clear:
             colorWipe(strip, Color(0,0,0), 10)

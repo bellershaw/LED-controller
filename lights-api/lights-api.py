@@ -110,13 +110,14 @@ def fade_out():
 @lights_api.put("/alarm_mode")
 def alarm_mode(alarm_mode):
     temp_color = [lights_api.lights.red, lights_api.lights.green, lights_api.lights.blue]
+    temp_bright = lights_api.lights.brightness
     if alarm_mode:
         for i in range(0,1):
             change_color(255,255,255)
             fade_in(100)
             fade_out()
         change_color(int(temp_color[0]), int(temp_color[1]), int(temp_color[2]))
-        fade_in(100)
+        fade_in(temp_bright)
 #change speed
 
 #change effect

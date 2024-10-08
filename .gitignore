@@ -129,5 +129,5 @@ dist
 .yarn/install-state.gz
 .pnp.*
 
-#cython stuff
-*.cpython*
+#pycache
+__pycache__/

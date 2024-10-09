@@ -89,20 +89,22 @@ def change_brightness(brightness):
     return({"BRIGHTNESS" : int(lights_api.lights.brightness)})
 
 @lights_api.put("/fade_in")
-def fade_in(max_brightness):
+def fade_in(max_brightness, speed):
+    speed = float(speed)
     max_brightness = float(max_brightness)
-    for i in range(0, int(max_brightness + 1), int(max_brightness/40)): 
-        lights_api.lights.brightness = i
-        strip.brightness = float(i)/100
+    for i in range(0, int(max_brightness * 1000 + 1), int((max_brightness * 1000) / (40 / speed))): 
+        lights_api.lights.brightness = i / 1000
+        strip.brightness = float(i/1000)/100
         time.sleep(.05)
     return({"BRIGHTNESS" : int(lights_api.lights.brightness)})
 
 @lights_api.put("/fade_out")
-def fade_out():
+def fade_out(speed):
+    speed = float(speed)
     brightness = lights_api.lights.brightness
-    for i in range(0, int(brightness + 1), int(brightness/40)): 
-        lights_api.lights.brightness = brightness-i
-        strip.brightness = float(brightness-i)/100
+    for i in range(0, int(brightness * 1000 + 1), int((brightness * 1000) / (40 / speed))): 
+        lights_api.lights.brightness = brightness - (i /1000)
+        strip.brightness = float(brightness-(i/1000))/100
         time.sleep(.05)
     return({"BRIGHTNESS" : int(lights_api.lights.brightness)})
 
@@ -112,10 +114,10 @@ def alarm_mode(alarm_mode):
     temp_color = [lights_api.lights.red, lights_api.lights.green, lights_api.lights.blue]
     temp_bright = lights_api.lights.brightness
     if alarm_mode:
-        for i in range(0,1):
-            change_color(255,255,255)
-            fade_in(100)
-            fade_out()
+        change_color(255,255,255)
+        for i in range(0,5):
+            fade_in(100, 30)
+            fade_out(30)
         change_color(int(temp_color[0]), int(temp_color[1]), int(temp_color[2]))
         fade_in(temp_bright)
 #change speed

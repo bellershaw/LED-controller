@@ -92,20 +92,20 @@ def change_brightness(brightness = 100):
 def fade_in(max_brightness = 100, speed = 0.5):
     speed = float(speed)
     max_brightness = float(max_brightness)
-    for i in range(0, int(max_brightness * 1000 + 1), int((max_brightness * 1000) / (40))): 
+    for i in range(0, int(max_brightness * 1000 + 1), int((max_brightness * 1000) / (480))): 
         lights_api.lights.brightness = i / 1000
         strip.brightness = float(i/1000)/100
-        time.sleep(.025 / speed)
+        time.sleep((1/480) / speed)
     return({"BRIGHTNESS" : int(lights_api.lights.brightness)})
 
 @lights_api.put("/fade_out")
 def fade_out(speed = 0.5):
     speed = float(speed)
     brightness = lights_api.lights.brightness
-    for i in range(0, int(brightness * 1000 + 1), int((brightness * 1000) / (40))): 
+    for i in range(0, int(brightness * 1000 + 1), int((brightness * 1000) / (480))): 
         lights_api.lights.brightness = brightness - (i /1000)
         strip.brightness = float(brightness-(i/1000))/100
-        time.sleep(.025 / speed)
+        time.sleep((1/480) / speed)
     return({"BRIGHTNESS" : int(lights_api.lights.brightness)})
 
 
@@ -126,8 +126,8 @@ def alarm_mode(alarm_mode = 1):
 def breathe(max_brightness = 100, speed = .5):
     lights_api.lights.effect = 'breathe'
     while lights_api.lights.effect == 'breathe':
-        fade_in()
-        fade_out()
+        fade_in(max_brightness, speed)
+        fade_out(speed)
     return({"BRIGHTNESS" : int(lights_api.lights.brightness)})
 
 @lights_api.put("/static")

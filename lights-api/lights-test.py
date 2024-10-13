@@ -18,7 +18,7 @@ LED_DMA        = 10      # DMA channel to use for generating a signal (try 10)
 LED_BRIGHTNESS = 1      # Set to 0 for darkest and 255 for brightest
 LED_INVERT     = False   # True to invert the signal (when using NPN transistor level shift)
 LED_CHANNEL    = 0       # set to '1' for GPIOs 13, 19, 41, 45 or 53
-
+EFFECT = 'static'
 
 
 # Define functions which animate LEDs in various ways.
@@ -78,45 +78,76 @@ def theaterChaseRainbow(strip, wait_ms=50):
             for i in range(0, strip.numPixels(), 3):
                 strip.setPixelColor(i+q, 0)
 
-def fade_in(max_brightness):
+def fade_in(strip, max_brightness = 100.0, speed = 0.5):
+    speed = float(speed)
     max_brightness = float(max_brightness)
-    for i in range(0, int(max_brightness + 1), int(max_brightness/10)): 
-        #lights_api.lights.brightness = i
-        print(i)
-        strip.brightness = float(i)/100
-        time.sleep(.1)
+    for i in range(0, int(max_brightness * 1000 + 1), int((max_brightness * 1000) / (40))): 
+        #lights_api.lights.brightness = i / 1000
+        strip.brightness = float(i/1000)/100
+        time.sleep(.025 / speed)
+        print(strip.brightness)
+    #return({"BRIGHTNESS" : int(lights_api.lights.brightness)})
 
+def fade_out(strip, speed = 0.5):
+    speed = float(speed)
+    brightness = strip.brightness
+    for i in range(0, int(brightness * 1000 + 1), int((brightness * 1000) / (40))): 
+       # lights_api.lights.brightness = brightness - (i /1000)
+        strip.brightness = float(brightness-(i/1000))/100
+        time.sleep(.025 / speed)
+        print(strip.brightness)
+   # return({"BRIGHTNESS" : int(lights_api.lights.brightness)})
+
+def breathe(strip, max_brightness = 100.0, speed = 1):
+    print("in here")
+    EFFECT = 'breathe'
+    print(EFFECT)
+    while EFFECT == 'breathe':
+        print("true")
+        fade_in(strip, max_brightness, speed)
+        fade_out(strip, speed)
+    #return({"BRIGHTNESS" : int(lights_api.lights.brightness)}) 
 # Main program logic follows:
-    # Process arguments
-    parser = argparse.ArgumentParser()
-    parser.add_argument('-c', '--clear', action='store_true', help='clear the display on exit')
-    args = parser.parse_args()
+# Process arguments
+parser = argparse.ArgumentParser()
+parser.add_argument('-c', '--clear', action='store_true', help='clear the display on exit')
+args = parser.parse_args()
 
-    # Create NeoPixel object with appropriate configuration.
-    strip = Adafruit_NeoPixel(LED_COUNT, LED_PIN, LED_FREQ_HZ, LED_DMA, LED_INVERT, LED_BRIGHTNESS, LED_CHANNEL)
-    # Intialize the library (must be called once before other functions).
-    strip.begin()
+# Create NeoPixel object with appropriate configuration.
+strip = Adafruit_NeoPixel(LED_COUNT, LED_PIN, LED_FREQ_HZ, LED_DMA, LED_INVERT, LED_BRIGHTNESS, LED_CHANNEL)
+# Intialize the library (must be called once before other functions).
+strip.begin()
 
-    print ('Press Ctrl-C to quit.')
-    if not args.clear:
-        print('Use "-c" argument to clear LEDs on exit')
+print ('Press Ctrl-C to quit.')
+if not args.clear:
+    print('Use "-c" argument to clear LEDs on exit')
 
-    try:
-
-        while True:
-            #print ('Color wipe animations.')
-            #colorWipe(strip, Color(255, 0, 0))  # Red wipe
-            #colorWipe(strip, Color(0, 255, 0))  # Blue wipe
-            #colorWipe(strip, Color(0, 0, 255))  # Green wipe
-            #print ('Theater chase animations.')
-            #theaterChase(strip, Color(127, 127, 127))  # White theater chase
-            #theaterChase(strip, Color(127,   0,   0))  # Red theater chase
-            #theaterChase(strip, Color(  0,   0, 127))  # Blue theater chase
-            #print ('Rainbow animations.')
-            #rainbow(strip)
-            #rainbowCycle(strip)
-            #theaterChaseRainbow(strip)
-            fade_in(100)
-    except KeyboardInterrupt:
-        if args.clear:
-            colorWipe(strip, Color(0,0,0), 10)
+try:
+    strip.brightness = 50
+    print("fade test")
+    fade_in(strip)
+    fade_out(strip)
+    
+    
+    time.sleep(3)
+    print("fade done")
+    breathe(strip)
+    print("done")
+    while True:
+        #print ('Color wipe animations.')
+        #colorWipe(strip, Color(255, 0, 0))  # Red wipe
+        #colorWipe(strip, Color(0, 255, 0))  # Blue wipe
+        #colorWipe(strip, Color(0, 0, 255))  # Green wipe
+        #print ('Theater chase animations.')
+        #theaterChase(strip, Color(127, 127, 127))  # White theater chase
+        #theaterChase(strip, Color(127,   0,   0))  # Red theater chase
+        #theaterChase(strip, Color(  0,   0, 127))  # Blue theater chase
+        #print ('Rainbow animations.')
+        #rainbow(strip)
+        #rainbowCycle(strip)
+        #theaterChaseRainbow(strip)
+        x = 0
+        #fade_in(100)
+except KeyboardInterrupt:
+    if args.clear:
+        colorWipe(strip, Color(0,0,0), 10)

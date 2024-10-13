@@ -50,7 +50,7 @@ strip.fill((255,255,255))
 strip.show()
 
 @lights_api.get("/")
-async def get_info():
+def get_info():
     return({
         "LED_COUNT" : LED_COUNT,
         "LED_PIN"   : LED_PIN,
@@ -69,48 +69,48 @@ async def get_info():
 
 #change color
 @lights_api.put("/change_color")
-def change_color(red, green, blue):
+def change_color(red = 255, green = 0, blue = 255):
     lights_api.lights.red = red
     lights_api.lights.green = green
     lights_api.lights.blue = blue
     strip.fill((int(red), int(green), int(blue)))
-    return({"LED_COLOR" : {
-                "RED" : lights_api.lights.red,
-                "GREEN" : lights_api.lights.green,
-                "BLUE" : lights_api.lights.blue
-                }
-            })
+    #return({"LED_COLOR" : {
+    #            "RED" : lights_api.lights.red,
+    #            "GREEN" : lights_api.lights.green,
+    #            "BLUE" : lights_api.lights.blue
+    #            }
+    #        })
 
 #change brightness
 @lights_api.put("/change_brightness")
-def change_brightness(brightness):
+def change_brightness(brightness = 100):
     lights_api.lights.brightness = brightness
     strip.brightness = float(brightness)/100
     return({"BRIGHTNESS" : int(lights_api.lights.brightness)})
 
 @lights_api.put("/fade_in")
-def fade_in(max_brightness, speed):
+def fade_in(max_brightness = 100, speed = 0.5):
     speed = float(speed)
     max_brightness = float(max_brightness)
-    for i in range(0, int(max_brightness * 1000 + 1), int((max_brightness * 1000) / (40 / speed))): 
+    for i in range(0, int(max_brightness * 1000 + 1), int((max_brightness * 1000) / (40))): 
         lights_api.lights.brightness = i / 1000
         strip.brightness = float(i/1000)/100
-        time.sleep(.05)
+        time.sleep(.025 / speed)
     return({"BRIGHTNESS" : int(lights_api.lights.brightness)})
 
 @lights_api.put("/fade_out")
-def fade_out(speed):
+def fade_out(speed = 0.5):
     speed = float(speed)
     brightness = lights_api.lights.brightness
-    for i in range(0, int(brightness * 1000 + 1), int((brightness * 1000) / (40 / speed))): 
+    for i in range(0, int(brightness * 1000 + 1), int((brightness * 1000) / (40))): 
         lights_api.lights.brightness = brightness - (i /1000)
         strip.brightness = float(brightness-(i/1000))/100
-        time.sleep(.05)
+        time.sleep(.025 / speed)
     return({"BRIGHTNESS" : int(lights_api.lights.brightness)})
 
 
 @lights_api.put("/alarm_mode")
-def alarm_mode(alarm_mode):
+def alarm_mode(alarm_mode = 1):
     temp_color = [lights_api.lights.red, lights_api.lights.green, lights_api.lights.blue]
     temp_bright = lights_api.lights.brightness
     if alarm_mode:
@@ -120,7 +120,19 @@ def alarm_mode(alarm_mode):
             fade_out(30)
         change_color(int(temp_color[0]), int(temp_color[1]), int(temp_color[2]))
         fade_in(temp_bright)
-#change speed
 
 #change effect
-    
+@lights_api.put("/breathe")
+def breathe(max_brightness = 100, speed = .5):
+    lights_api.lights.effect = 'breathe'
+    while lights_api.lights.effect == 'breathe':
+        fade_in()
+        fade_out()
+    return({"BRIGHTNESS" : int(lights_api.lights.brightness)})
+
+@lights_api.put("/static")
+def static():
+    lights_api.lights.effect = 'static'
+    time.sleep(4)
+    change_brightness()
+    return({"BRIGHTNESS" : int(lights_api.lights.brightness)})

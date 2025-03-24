@@ -1,21 +1,26 @@
 import './App.css';
 import { Button, TextInput} from "flowbite-react";
 import axios from 'axios';
-import React, { useState } from 'react';
+import React, { useState, Fragment } from 'react';
 import { ChromePicker } from "react-color";
+import Wheel from '@uiw/react-color-wheel';
+import { hsvaToHex, rgbaToHexa } from '@uiw/color-convert';
 
 function App() {
 
-  const [color, setColor] = useState("");
+  const [hsva, setHsva] = useState({ h: 214, s: 43, v: 90, a: 1 });
 
-  const handleColorChange  = (e) => {
-    setColor(e.rgb);
-    console.log(e)
+  const handleColorChange  = (color) => {
+    setHsva({ ...hsva, ...color.hsva })
+    console.log('color', color)
+    console.log(color.rgb)
+    console.log(color.g)
+
     axios.put('http://192.168.0.219:8000/change_color', {},
      { params : {
-      red : e.rgb.r,
-      green : e.rgb.g,
-      blue : e.rgb.b}}
+      red : color.rgb.r,
+      green : color.rgb.g,
+      blue : color.rgb.b}}
     )
      .then(response => {
       //Handle the response
@@ -29,14 +34,10 @@ function App() {
   };
   return (
     <div className="App">
-      <div>
-        <label for="text_input" class="mb-2 text-sm font-medium text-gray-100 m-2">Text Input</label>
-        <input type="text" class="bg-black border border-gray-100 text-gray-100 text-sm rounded-sm m-2" placeholder="Enter Text"/>
-      </div>
-      <ChromePicker
-        color={color}
-        onChange={handleColorChange}
-      />
+      <Fragment>
+      <Wheel color={hsva} onChange={handleColorChange} />
+      <div style={{ width: '100%', height: 34, marginTop: 20, background: hsvaToHex(hsva)}}></div>
+    </Fragment>
     </div>
   );
 }

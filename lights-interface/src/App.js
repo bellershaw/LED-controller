@@ -16,7 +16,7 @@ function App() {
     console.log(color.rgb)
     console.log(color.g)
 
-    axios.put('http://192.168.0.219:8000/change_color', {},
+    axios.put('http://192.168.0.2:8000/change_color', {},
      { params : {
       red : color.rgb.r,
       green : color.rgb.g,

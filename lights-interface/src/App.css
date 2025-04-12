@@ -24,6 +24,36 @@
   color: white;
 }
 
+.Color-Wheel{
+  height: 100;
+  width: fit-content;
+  padding:20px;
+  border: none;
+  margin:auto;
+  margin-top: 2vh;
+  margin-bottom: 2vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  text-decoration: none;
+}
+
+.Color-Display{
+  width: 100vw;
+  height: 2.5vh;
+  margin-top: 20;
+  margin-bottom: 20;
+  padding-bottom: 20;
+  background: blue;
+}
+
+.Buttons{
+  width: 100vw;
+  height: 2.5vh;
+  margin-top: 1vh;
+  margin-bottom: 1vh;
+}
+
 .App-link {
   color: #61dafb;
 }

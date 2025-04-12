@@ -31,13 +31,29 @@ function App() {
       // Handle errors
       });
 
-  };
+  }
+  
+  async function createColorDisplay(){
+        const color_div = document.getElementById("Color-Div") 
+        console.log(color_div)
+        const color_display = document.createElement("div")
+        color_display.className = "Color-Display"
+        color_div.appendChild(color_display)
+  } 
+
+  ;
   return (
     <div className="App">
-      <Fragment>
-      <Wheel color={hsva} onChange={handleColorChange} />
-      <div style={{ width: '100%', height: 34, marginTop: 20, background: hsvaToHex(hsva)}}></div>
-    </Fragment>
+      <div className="Color-Div" id="Color-Div">
+        <Fragment>
+          <Wheel color={hsva} onChange={handleColorChange}  className="Color-Wheel"/>
+          <div className="Color-Display"/>
+        </Fragment>
+      </div>
+      <div className="Buttons">
+        <button type="button" onClick={createColorDisplay} class="text-white bg-gradient-to-br from-purple-600 to-blue-500 hover:bg-gradient-to-bl focus:ring-4 focus:outline-none focus:ring-blue-300 dark:focus:ring-blue-800 font-medium rounded-lg text-sm px-5 py-2.5 text-center me-2 mb-1vh">Add</button>
+        <button type="button" class="text-white bg-gradient-to-r from-purple-500 to-pink-500 hover:bg-gradient-to-l focus:ring-4 focus:outline-none focus:ring-purple-200 dark:focus:ring-purple-800 font-medium rounded-lg text-sm px-5 py-2.5 text-center me-2 mb-1vh">Remove</button>
+      </div>
     </div>
   );
 }

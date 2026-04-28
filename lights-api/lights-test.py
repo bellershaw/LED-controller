@@ -91,12 +91,12 @@ def fade_in(strip, max_brightness = 100.0, speed = 0.5):
 def fade_out(strip, speed = 0.5):
     speed = float(speed)
     brightness = strip.brightness
-    for i in range(0, int(brightness * 1000 + 1), int((brightness * 1000) / (40))): 
+    for i in range(10, int(brightness * 1000 + 1), int((brightness * 1000) / (40))): 
        # lights_api.lights.brightness = brightness - (i /1000)
         strip.brightness = float(brightness-(i/1000))/100
         time.sleep(.025 / speed)
         print(strip.brightness)
-   # return({"BRIGHTNESS" : int(lights_api.lights.brightness)})
+    return({"BRIGHTNESS" : int(lights_api.lights.brightness)})
 
 def breathe(strip, max_brightness = 100.0, speed = 1):
     print("in here")
@@ -125,13 +125,12 @@ if not args.clear:
 try:
     strip.brightness = 50
     print("fade test")
-    fade_in(strip)
     fade_out(strip)
     
     
     time.sleep(3)
     print("fade done")
-    breathe(strip)
+    #breathe(strip)
     print("done")
     while True:
         #print ('Color wipe animations.')
@@ -151,3 +150,45 @@ try:
 except KeyboardInterrupt:
     if args.clear:
         colorWipe(strip, Color(0,0,0), 10)
+
+import time
+import math
+min_brightness = -15
+max_brightness = 100
+current_brightness = 0
+break_flag = 0
+strip_bright = 100
+speed = 5
+
+current_brightness = int(current_brightness)
+max_brightness = float(max_brightness)
+for i in range(0, (max_brightness - current_brightness) * 1000 + 1, int(((max_brightness - current_brightness) * 1000)/480)): 
+    print(int(min(math.ceil((current_brightness * 1000 + i)/1000),100)))
+    #change_brightness(lights_api.lights.brightness)
+    time.sleep((1/480) / speed)
+
+
+for i in range(0, (max_brightness - current_brightness) * 1000 + 1, int(((max_brightness - current_brightness) * 1000) /480)): 
+            if break_flag == 1:
+                break_flag = 0
+                break
+            # lights_api.lights.brightness = brightness - (i /1000)
+            strip_bright = min(math.ceil((current_brightness * 1000 + i)/1000),100)
+            print("i", i)
+            time.sleep((1/480) / speed)
+            print("sb", strip_bright)
+
+
+
+for i in range(0, (current_brightness - min_brightness) * 1000 + 1, int(((current_brightness - min_brightness) * 1000) /480)): 
+            if break_flag == 1:
+                break_flag = 0
+                break
+            # lights_api.lights.brightness = brightness - (i /1000)
+            strip_bright = max(math.floor((current_brightness * 1000 - i)/1000), 0)
+            print("i", i)
+            time.sleep((1/480) / speed)
+            print("sb", strip_bright)
+print("done")
+
+
